@@ -1,0 +1,81 @@
+@import "../lib/normalize";
+@globalGreen:#30C0B1;
+@globalShallowBlue:#02B4EC; //new
+//@greenColor:
+@horizontalSideS:2%;
+@horizontalContentS:96%;
+@horizontalSideB:.3rem;
+@verticalSideS: .2rem;
+@verticalSideB: .3rem;
+
+@font-10:.5rem;
+@font-12:.6rem;
+@font-14:.7rem;
+@font-15:.75rem; //new
+@font-16:.8rem;
+@font-18:.9rem;
+@font-20:1rem;
+@font-22:1.1rem;
+@font-24:1.2rem;  //new
+@font-30:1.5rem; //new
+@line-color:#DDDDDD;
+@back-color:#F5F5F5;
+
+@font-color-dark:#333; //new
+@font-color-darkGray:#666;
+@font-color-middleGray:#999; //new
+@font-color-shallowGray:#BBB;
+html, body{ background:@back-color; left: 0; right: 0;}
+a,body,button,div,h4,header,html,img,input,li,p,section,select,span,ul{margin:0;padding:0;border:0}
+
+body{ font-family:"Arial","宋体" ,"\5FAE\8F6F\96C5\9ED1", Verdana, Simsun, "Segoe UI Web Light", "Segoe UI Light", "Segoe UI Web Regular", "Segoe UI", "Segoe UI Symbol", "Helvetica Neue", Arial; color:#666; }
+div, li{box-sizing: border-box;}
+button,div,input,select,textarea{outline:0;margin:0;font-family:inherit;}
+h4{text-align:center;display:inline-block;font-size:@font-18;font-weight: 400}
+//.g-main{ left:0; right:0; font-size: @font-14; color: @font-color-middleGray; background-color: @back-color;
+//  a{color:@globalShallowBlue; cursor: pointer;}
+//}
+.container, .g-index, .g-adShare, .g-faultD, .g-adShareIntro, .g-speed, .g-andEye, .g-adBox, .g-netTV {position: absolute; width: 100%; height: 100%; top:0; left: 0;}
+@navHeight: 2.4rem; @navImgHeight:1.2rem; @navImgMargin:.6rem;
+.g-nav{position: absolute; display: none;  width: 100%; height: @navHeight; line-height: @navHeight; left:0px; top:0px; background-color: #23C1B1; color:#FFF; font-size: @font-18;text-align:center;overflow:hidden;
+  img{float: left; width: 100%; height: 100%;}
+  .g-navLeft, .g-navRight, .g-navRightText{position: relative; margin: @navImgMargin;  height:@navImgHeight; }
+  .g-navLeft{ float: left; width: @navImgHeight; }
+  .g-navRight{ float: right; width: @navImgHeight;}
+  .g-navRightText{ float: right; width: 2rem; line-height: @navImgHeight; font-size: @font-14; }
+}
+
+.g-context{position: absolute; width: 18.75rem; top: 0;  bottom: 0;overflow-y: auto; left:50%;margin-left: -9.375rem;
+  .m-btn{ float: left; width: 100%;
+    input{   background-color: @globalGreen; color:#FFF; border-radius: .3rem; font-size: @font-14;
+      &.narrow{width: 72%; margin:0 14%; height: 2.2rem;  }
+      &.wide{margin:0 3.5%; width: 93%; height: 1.8rem;}
+    }
+
+  }
+}
+
+.toast-lg{ padding:1rem 1.5rem 1.5rem;}
+.toast{font-size: .8rem;}
+
+.alert-modal { width: 15rem; max-width: 18rem; padding: 0; }
+.alert-title { background-color: #f4f4f4; height: 2.2rem; line-height: 2.2rem; font-size: @font-14; }
+.alert-message { padding: 1rem; font-size: @font-12;}
+.alert-btn{padding: .7rem; font-size: @font-14;}
+
+.progressbar { background-color: #e0e0e0; border-radius: 10px;}
+.progressbar-indicator { color: #55C5FF;}
+.progressbar-primary .progressbar-indicator{
+ color: #55C5FF;
+}
+
+.tabbar {
+
+  height: 1.8rem;
+  margin-bottom: 0;
+  font-size: @font-16;
+  padding-top: .5rem;
+  //margin-top: .5rem;
+}
+//.tabbar-item{  margin-top: .5rem;
+//}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="中国移动智汇家庭">
+    <meta name="renderer" content="webkit">
+    <title>故障诊断</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no,email=no" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="full-screen" content="yes"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="x5-orientation" content="portrait"/>
+    <meta name="360-fullscreen" content="true"/>
+    <meta name="x5-page-mode" content="app"/>
+    <meta name="browsermode" content="application"/>
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" type="text/css" href="../css/faultDiagnosis.css">
+    <link rel="stylesheet" type="text/css" href="../css/lib/alertPopShow.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="g-faultD">
+        <header class="g-nav">
+            <router-link class="g-navLeft" to='/index'><img src="../assets/icon-back.png"></router-link>
+            <h4>故障诊断</h4>
+            <div class="g-navRightText"><span></span></div>
+        </header>
+        <div class="g-context">
+            <div class="m-first">
+                <div class="m-image">
+                    <div class="u-image"><img src="../../static/faultDiagnosis/img1.png"/></div>
+                </div>
+                <div class="m-image">
+                    <div class="u-image"><img src="../../static/faultDiagnosis/img2.png"/></div>
+                </div>
+                <div class="m-image">
+                    <div class="u-image"><img src="../../static/faultDiagnosis/img3.png"/></div>
+                </div>
+                <div class="m-image">
+
+                    <div class="u-image"><img src="../../static/faultDiagnosis/img4.png"/></div>
+                </div>
+                <div class="m-text">
+                    <p class="u-text">本地</p>
+                    <p class="u-text">无线路由</p>
+                    <p class="u-text">光猫</p>
+                    <p class="u-text">互联网</p>
+                </div>
+            </div>
+
+            <div class="m-second gradient">
+                <div class="u-img"><div id="testState1" class="i-first beforeTest "></div></div>
+                <div class="u-img"><div id="testState2" class="i-middle beforeTest"></div></div>
+                <div class="u-img"><div id="testState3" class="i-middle beforeTest"></div></div>
+                <div class="u-img"><div id="testState4" class="i-last beforeTest"></div></div>
+            </div>
+
+            <div class="m-result">
+                <div class="u-testing">正在诊断中...</div>
+            </div>
+
+            <div class="m-btn">
+                <input type="button" class="narrow j-digbtn disable" onclick="diagnosis()" disabled = "disabled" value="重新诊断"> </input>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/lib/autoScreenAdapter.js"></script>
+<script type="text/javascript" src="../js/lib/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/common/base.js"></script>
+<script type="text/javascript" src="../js/lib/alertPopShow.js"></script>
+
+<script>
+    clickReturnIcon('index.html');
+
+    var runStates1 = [
+        ['beforeTest', 'beforeTest', 'beforeTest', 'beforeTest'],
+        ['testing', 'beforeTest', 'beforeTest', 'beforeTest'],
+        ['success', 'testing', 'beforeTest', 'beforeTest'],
+        ['success', 'fail', 'beforeTest', 'beforeTest'],
+    ];
+    var runStates2 = [
+        ['beforeTest', 'beforeTest', 'beforeTest', 'beforeTest'],
+        ['testing', 'beforeTest', 'beforeTest', 'beforeTest'],
+        ['success', 'testing', 'beforeTest', 'beforeTest'],
+        ['success', 'success', 'testing', 'beforeTest'],
+        ['success', 'success', 'success', 'testing'],
+        ['success', 'success', 'success', 'testing'],
+    ];
+    var runStates = [];
+    var firstSuccess = 1;
+
+    var originClass = ['i-first', 'i-middle', 'i-middle', 'i-last'];
+
+    function startTest() {
+        for(var i = 0; i<runStates.length; i++){
+            setTimeout('setState(' +i+')',500*i);
+        }
+    }
+    function setState(i) {
+        var runstate = runStates[i];
+
+        if(i != runStates.length - 1) {
+            setCss(runstate);
+        }
+        if(i == runStates.length - 1){
+            if(firstSuccess == 1){
+                testNetwork();
+            }
+            else{
+                setresultFirstFail();
+            }
+        }
+    }
+
+    function testNetwork() {
+        $.ajax({
+               url: 'http://221.179.131.157:8080/cmcc-base/32/user/session/123',
+               type: 'GET',
+               timeout : 10000, //超时时间，单位毫秒
+               aysc:false,
+               withCredentials:true,
+               success: function (res) {
+               runStates[runStates.length - 1][3] = 'success';
+               setResult();
+               
+               },
+               error:function (res) {
+               runStates[runStates.length - 1][3] = 'fail';
+               setResult();
+               }
+               });
+    }
+
+
+    function setResult() {
+        setCss(runStates[runStates.length - 1]);
+
+        var rehtml = '';
+        if(runStates[runStates.length - 1][3] == 'fail') {
+            rehtml = ' <div class="u-img"> <img src="../../static/faultDiagnosis/state-fail.png"> </div> ' +
+                    '<div class="u-result">网络异常</div>' +
+                    ' <div class="u-text"> <p>您当前WiFi不能正常访问互联网，请检查：</p>' +
+                    '<p> 1、无线路由器与猫之间的网线是否连接正常；</p>' +
+                    '<p> 2、猫的电源是否开启；</p>' +
+                    '<p> 3、连入猫的光纤或电话线是否连接正常</p></div>';
+        }
+        else if(runStates[runStates.length - 1][3] == 'success') {
+            rehtml = ' <div class="u-img"> <img src="../../static/faultDiagnosis/state-success.png"> </div> ' +
+                    '<div class="u-result">网络正常</div>' +
+                    ' <div class="u-text t-center"> <p>您的无线网络已成功接入互联网.</p></div>';
+        }
+        $('.m-result').html(rehtml);
+        $('.j-digbtn').removeAttr('disabled');
+    }
+
+    function setresultFirstFail() {
+        setCss(runStates[runStates.length - 1]);
+
+        var rehtml = '<div class="u-img"> <img src="../../static/faultDiagnosis/state-fail.png"> </div> ' +
+                    '<div class="u-result">路由故障</div>' +
+                    ' <div class="u-text t-center"> <p>WIFI未开启,无法进行手机端的诊断</p>';
+        $('.m-result').html(rehtml);
+        $('.j-digbtn').removeAttr('disabled');
+    }
+
+    function setCss(runstate) {
+        for (var j = 0; j < 4; j++) {
+            $('#testState' + (j + 1)).removeClass();
+            $('#testState' + (j + 1)).addClass(originClass[j]);
+            $('#testState' + (j + 1)).addClass(runstate[j]);
+        }
+    }
+
+    function diagnosis() {
+        setCss(runStates[0]);
+        var rehtml = '<div class="u-testing">正在诊断中...</div>';
+        $('.m-result').html(rehtml);
+        $('.j-digbtn').attr('disabled', 'disabled');
+
+        getfirstState();
+    }
+
+    <!-- 申明交互 -->
+    function setupWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+        else {
+            document.addEventListener(
+                    'WebViewJavascriptBridgeReady',
+                    function() {
+                        console.log('JS got a message inelse');
+                        callback(WebViewJavascriptBridge)
+                    },
+                    false
+            );
+        }
+        if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'https://__bridge_loaded__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0);
+    }
+
+    <!-- 处理交互  方法名要和ios内定义的对应-->
+    setupWebViewJavascriptBridge(function(bridge) {
+        window.bridge = bridge;
+        getfirstState();
+    });
+
+    function getfirstState() {
+        bridge.callHandler('netType', {"key":"phoneNumber"},function responseCallback(response) {
+            firstSuccess = response;
+            if(firstSuccess == 1){
+                runStates = runStates2;
+            }
+            else{
+                runStates = runStates1;
+            }
+            startTest();
+            console.log('get response:'+response);
+
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+def initGradleEnvironment(){
+    Properties properties = new Properties()
+    File propertyFile = new File(rootDir.getAbsolutePath()+ "/local.properties")
+    properties.load(propertyFile.newDataInputStream())
+
+    gradle.ext.sourceAppInterface = Boolean.parseBoolean(properties.getProperty('sourceAppInterface'))
+
+    gradle.ext.sourceCommon = Boolean.parseBoolean(properties.getProperty('sourceCommon'))
+
+    gradle.ext.sourceSmartHome = Boolean.parseBoolean(properties.getProperty('sourceSmartHome'))
+    gradle.ext.sourceSmartHomeInterface = Boolean.parseBoolean(properties.getProperty('sourceSmartHomeInterface'))
+
+    gradle.ext.sourceGateway = Boolean.parseBoolean(properties.getProperty('sourceGateway'))
+    gradle.ext.sourceGatewayInterface = Boolean.parseBoolean(properties.getProperty('sourceGatewayInterface'))
+
+    gradle.ext.sourceVoip = Boolean.parseBoolean(properties.getProperty('sourceVoip'))
+    gradle.ext.sourceVoipInterface = Boolean.parseBoolean(properties.getProperty('sourceVoipInterface'))
+
+    gradle.ext.sourceIm = Boolean.parseBoolean(properties.getProperty('sourceIm'))
+    gradle.ext.sourceImInterface = Boolean.parseBoolean(properties.getProperty('sourceImInterface'))
+
+    gradle.ext.sourceFamily = Boolean.parseBoolean(properties.getProperty('sourceFamily'))
+    gradle.ext.sourceFamilyInterface = Boolean.parseBoolean(properties.getProperty('sourceFamilyInterface'))
+
+    gradle.ext.sourceSetting = Boolean.parseBoolean(properties.getProperty('sourceSetting'))
+    gradle.ext.sourceSettingInterface = Boolean.parseBoolean(properties.getProperty('sourceSettingInterface'))
+
+    gradle.ext.sourceLogin = Boolean.parseBoolean(properties.getProperty('sourceLogin'))
+    gradle.ext.sourceLoginInterface = Boolean.parseBoolean(properties.getProperty('sourceLoginInterface'))
+
+    gradle.ext.sourceIndex = Boolean.parseBoolean(properties.getProperty('sourceIndex'))
+    gradle.ext.sourceIndexInterface = Boolean.parseBoolean(properties.getProperty('sourceIndexInterface'))
+
+    gradle.ext.sourceSpeedUp = Boolean.parseBoolean(properties.getProperty('sourceSpeedUp'))
+    gradle.ext.sourceSpeedUpInterface = Boolean.parseBoolean(properties.getProperty('sourceSpeedUpInterface'))
+
+    gradle.ext.sourceNews = Boolean.parseBoolean(properties.getProperty('sourceNews'))
+    gradle.ext.sourceNewsInterface = Boolean.parseBoolean(properties.getProperty('sourceNewsInterface'))
+
+    gradle.ext.sourceFamilyAlbum = Boolean.parseBoolean(properties.getProperty('sourceFamilyAlbum'))
+    gradle.ext.sourceFamilyAlbumInterface = Boolean.parseBoolean(properties.getProperty('sourceFamilyAlbumInterface'))
+}
+
+//初始化
+initGradleEnvironment()
+include ':app'
+
+if(gradle.ext.sourceAppInterface){
+    include ':appinterface'
+}
+
+if(gradle.ext.sourceCommon) {
+    include ':common'
+    project(':common').projectDir = new File(rootProject.projectDir, '../UniversalCommon/common')
+}
+
+if(gradle.ext.sourceSmartHome) {
+    include ':smarthome'
+    project(':smarthome').projectDir = new File(rootProject.projectDir, '../UniversalSmartHome/smarthome')
+}
+if (gradle.ext.sourceSmartHomeInterface) {
+    include ':smarthomeinterface'
+    project(':smarthomeinterface').projectDir = new File(rootProject.projectDir, '../UniversalSmartHome/smarthomeinterface')
+}
+
+if(gradle.ext.sourceVoip) {
+    include ':voip'
+    project(':voip').projectDir = new File(rootProject.projectDir, '../UniversalVoip/voip')
+}
+if (gradle.ext.sourceVoipInterface) {
+    include ':voipinterface'
+    project(':voipinterface').projectDir = new File(rootProject.projectDir, '../UniversalVoip/voipinterface')
+}
+
+if(gradle.ext.sourceIm) {
+    include ':im'
+    project(':im').projectDir = new File(rootProject.projectDir, '../UniversalIM/im')
+}
+if(gradle.ext.sourceImInterface) {
+    include ':iminterface'
+    project(':iminterface').projectDir = new File(rootProject.projectDir, '../UniversalIM/iminterface')
+}
+
+if(gradle.ext.sourceFamilyInterface) {
+    include ':familyinterface'
+    project(':familyinterface').projectDir = new File(rootProject.projectDir, '../UniversalFamily/familyinterface')
+}
+if(gradle.ext.sourceFamily) {
+    include ':family'
+    project(':family').projectDir = new File(rootProject.projectDir, '../UniversalFamily/app')
+}
+
+if(gradle.ext.sourceGateway) {
+    include ':gateway'
+    project(':gateway').projectDir = new File(rootProject.projectDir, '../UniversalGateway/gateway')
+}
+if(gradle.ext.sourceGatewayInterface) {
+    include ':gatewayinterface'
+    project(':gatewayinterface').projectDir = new File(rootProject.projectDir, '../UniversalGateway/gatewayinterface')
+}
+
+if(gradle.ext.sourceIndex) {
+    include ':index'
+    project(':index').projectDir = new File(rootProject.projectDir, '../UniversalIndex/index')
+}
+if(gradle.ext.sourceIndexInterface) {
+    include ':indexinterface'
+    project(':indexinterface').projectDir = new File(rootProject.projectDir, '../UniversalIndex/indexinterface')
+}
+
+if(gradle.ext.sourceLogin) {
+    include ':login'
+    project(':login').projectDir = new File(rootProject.projectDir, '../UniversalLogin/login')
+}
+if(gradle.ext.sourceLoginInterface) {
+    include ':logininterface'
+    project(':logininterface').projectDir = new File(rootProject.projectDir, '../UniversalLogin/logininterface')
+}
+
+if(gradle.ext.sourceNews) {
+    include ':news'
+    project(':news').projectDir = new File(rootProject.projectDir, '../UniversalThirdParty/UniversalNews/news')
+}
+if(gradle.ext.sourceNewsInterface) {
+    include ':newsinterface'
+    project(':newsinterface').projectDir = new File(rootProject.projectDir, '../UniversalThirdParty/UniversalNews/newsinterface')
+}
+
+if(gradle.ext.sourceSpeedUp) {
+    include ':speedup'
+    project(':speedup').projectDir = new File(rootProject.projectDir, '../UniversalThirdParty/UniversalSpeedUp/speedup')
+}
+if(gradle.ext.sourceSpeedUpInterface) {
+    include ':speedupinterface'
+    project(':speedupinterface').projectDir = new File(rootProject.projectDir, '../UniversalThirdParty/UniversalSpeedUp/speedupinterface')
+}
+
+if(gradle.ext.sourceSetting) {
+    include ':setting'
+    project(':setting').projectDir = new File(rootProject.projectDir, '../UniversalPersonSettings/setting')
+}
+if(gradle.ext.sourceSettingInterface) {
+    include ':settinginterface'
+    project(':settinginterface').projectDir = new File(rootProject.projectDir, '../UniversalPersonSettings/settinginterface')
+}
+if(gradle.ext.sourceFamilyAlbum) {
+    include ':familyalbum'
+    project(':familyalbum').projectDir = new File(rootProject.projectDir, '../UniversalThirdParty/UniversalAppFamilyAlbum/familyalbum')
+}
+
+if(gradle.ext.sourceFamilyAlbumInterface) {
+    include ':familyalbuminterface'
+    project(':familyalbuminterface').projectDir = new File(rootProject.projectDir, '../UniversalThirdParty/UniversalAppFamilyAlbum/familyalbuminterface')
+}
+//include ':ptr-lib'
+//project(':ptr-lib').projectDir = new File(rootProject.projectDir, '../android-Ultra-Pull-To-Refresh-master/ptr-lib')
+
+

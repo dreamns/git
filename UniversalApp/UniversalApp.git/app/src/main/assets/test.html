@@ -1,0 +1,41 @@
+<html>
+<head><title>test</title></head>
+<body>
+<button onclick='getMac();'>网管MAC</button>
+<div id="content"></div>
+
+<script type="text/javascript">
+function setupWebViewJavascriptBridge(callback) {
+	if (window.WebViewJavascriptBridge) { 
+		return callback(WebViewJavascriptBridge); 
+	} else {
+		document.addEventListener('WebViewJavascriptBridgeReady',
+			function() {callback(WebViewJavascriptBridge)}, false);
+	}
+	if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+	window.WVJBCallbacks = [callback];
+	var WVJBIframe = document.createElement('iframe');
+	WVJBIframe.style.display = 'none';
+	WVJBIframe.src = 'https://__bridge_loaded__';
+	document.documentElement.appendChild(WVJBIframe);
+	setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+}
+setupWebViewJavascriptBridge(function(bridge) {
+	window.bridge = bridge;
+}) 
+
+function getMac(){
+window.bridge.callHandler('getInfomation', {"key":"gatewayMAC"},
+ function responseCallback(responseData) {
+    console.log("JS received phoneNumber:", responseData)
+    document.getElementById('content').innerHTML = responseData+'';
+
+})
+}
+
+
+
+</script>
+
+</body>
+</html>

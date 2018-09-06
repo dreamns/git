@@ -1,0 +1,46 @@
+#BOOT
+Boot:
+  data:
+      ipAddress: 192.168.1.1
+      firmwareVersion: CMHI;GS2210
+      softwareVersion: V1.0.18;5.4.0
+  evenType: Boot
+  gwId: 24615AAD2001
+  sessionId: 33
+  timestamp: 1523595784595
+  deviceId: CMCC-30187-58480100022e
+  childDeviceId: 310bee08004b1200
+#Inform
+Inform:
+  data:
+    params:
+      - paramCode: ipAddress
+        paramValue: 192.168.1.2
+  evenType: Inform
+  gwId: 24615AAD2001
+  sessionId: 34
+  deviceId: CMCC-30212-34ea34cecd5a
+  timestamp: 1523600658189
+  childDeviceId: 310bee08004b1200
+  
+#control
+Control:
+  gwId: 24615AAD2001
+  
+  timestamp: 1523600658189
+  sessionId: 34
+  commandType: Control
+  data:
+    params:
+      - paramCode: outletStatus
+        paramValue: '0'
+        
+#logout
+Logout:
+  gwId: 24615AAD2001
+  deviceId: CMCC-30212-34ea34cecd5a
+  timestamp: 1523600368287
+
+
+
+

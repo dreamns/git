@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.cmri.universalapp.base.view.DotBottomButton
+        android:id="@+id/check_box_bottom_tab_find"
+        style="@style/DotButton"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        app:dbb_dotSrc="@drawable/ico_message_remind"
+        app:dbb_src="@drawable/selector_radio_button_bottom_bar_find"
+        app:dbb_title="@string/index"
+        app:dbb_titleColor="@drawable/selector_radio_button_bottom_bar_text"
+        app:dbb_titleSize="@dimen/size5" />
+
+
+    <com.cmri.universalapp.base.view.DotBottomButton
+        android:id="@+id/check_box_bottom_tab_family"
+        style="@style/DotButton"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        app:dbb_dotSrc="@drawable/ico_message_remind"
+        app:dbb_src="@drawable/selector_radio_button_bottom_bar_home"
+        app:dbb_title="@string/socially"
+        app:dbb_titleColor="@drawable/selector_radio_button_bottom_bar_text"
+        app:dbb_titleSize="@dimen/size5" />
+
+
+    <com.cmri.universalapp.base.view.DotBottomButton
+        android:id="@+id/check_box_bottom_tab_gateway"
+        style="@style/DotButton"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        app:dbb_dotSrc="@drawable/ico_message_remind"
+        app:dbb_src="@drawable/selector_radio_button_bottom_bar_gateway"
+        app:dbb_title="@string/my_gateway"
+        app:dbb_titleColor="@drawable/selector_radio_button_bottom_bar_text"
+        app:dbb_titleSize="@dimen/size5" />
+
+    <com.cmri.universalapp.base.view.DotBottomButton
+        android:id="@+id/check_box_bottom_tab_device"
+        style="@style/DotButton"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        app:dbb_dotSrc="@drawable/ico_message_remind"
+        app:dbb_src="@drawable/selector_radio_button_bottom_bar_device"
+        app:dbb_title="@string/my_device"
+        app:dbb_titleColor="@drawable/selector_radio_button_bottom_bar_text"
+        app:dbb_titleSize="@dimen/size5" />
+
+    <com.cmri.universalapp.base.view.DotBottomButton
+        android:id="@+id/check_box_bottom_tab_custom"
+        style="@style/DotButton"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        app:dbb_dotSrc="@drawable/ico_message_remind"
+        app:dbb_title="@string/my_device"
+        app:dbb_titleColor="@drawable/selector_radio_button_bottom_bar_text"
+        app:dbb_titleSize="@dimen/size5" />
+</merge>

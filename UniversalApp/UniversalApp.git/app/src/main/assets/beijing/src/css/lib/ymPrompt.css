@@ -1,0 +1,115 @@
+/*container*/
+#ym-window {
+  background: #FFF;
+  overflow: hidden;
+  font-size: 12px;
+  font-family: "Microsoft YaHei";
+  box-shadow: 0 0 5px #999;
+}
+/*header*/
+.ym-tc {
+  overflow: hidden;
+  height: 42px;
+  line-height: 42px;
+  background: #63A8EB;
+}
+.ym-ttc {
+  height: 0;
+}
+.ym-header-text {
+  font-size: 16px;
+  font-weight: normal;
+  color: #FFF;
+  margin-left: 20px;
+  float: left;
+}
+.ym-header-tools {
+  float: right;
+  margin-top: 2px;
+}
+.ym-header-tools strong {
+  display: none;
+}
+/*body*/
+.ym-body {
+  overflow-y: auto;
+  padding: 0;
+  font-size: 16px;
+}
+.ym-body .myContent {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.ym-body .ym-content {
+  position: relative;
+}
+.ym-body .success {
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 32px;
+  margin-top: -16px;
+  margin-left: -100px;
+  padding: 5px 60px 0 60px;
+}
+.ym-body .error {
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 32px;
+  margin-top: -16px;
+  margin-left: -110px;
+  padding: 5px 60px 0 60px;
+}
+/*button*/
+.ym-btn {
+  text-align: center;
+}
+/*footer*/
+/*icon*/
+.ymPrompt_alert {
+  padding-left: 90px;
+}
+.ymPrompt_succeed {
+  padding-left: 120px;
+  padding-right: 25px;
+}
+.ymPrompt_error {
+  padding-left: 90px;
+}
+.ymPrompt_confirm {
+  /*height:100px !important;*/
+  margin: 0 20px;
+  text-align: center;
+}
+.ymPrompt_succeed .ym-content,
+.ymPrompt_error .ym-content,
+.ymPrompt_confirm .ym-content {
+  padding: 50px 0 20px;
+  color: #000;
+  font-size: 18px;
+}
+.ymPrompt_alert .ym-content {
+  padding-top: 30px;
+}
+.ym-header-tools div {
+  cursor: pointer;
+  width: 12px;
+  height: 12px;
+  float: left;
+  margin: 10px;
+}
+input.btnStyle {
+  border: none;
+  height: 32px;
+  width: 100px;
+  background: #2D9BDD;
+  color: #FFF;
+  margin: 20px;
+  outline: none;
+  font-size: 14px;
+}

@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java']
+            assets.srcDirs = ['src/main/assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+    uploadArchives {
+        configuration = configurations.archives
+        repositories.mavenDeployer {
+            repository(url: 'http://172.23.12.234/nexus/content/repositories/zdyy/') {//仓库地址
+                authentication(userName: "zdyy",//用户名
+                        password: "zdyy123")//密码
+            }
+            snapshotRepository(url: 'http://172.23.12.234/nexus/content/repositories/zdyy_snapshot/') {//仓库地址
+                authentication(userName: "zdyy",//用户名
+                        password: "zdyy123")//密码
+            }
+            pom.project {
+                name 'appinterface'
+                packaging 'aar'
+                description 'none'
+                groupId "com.cmri.universalapp"
+                artifactId 'appinterface'
+                version '1.0.0-SNAPSHOT'
+            }
+        }
+    }

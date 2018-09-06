@@ -1,0 +1,1483 @@
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+
+def getIcon(version) {
+    def icon
+    println version.toLowerCase()
+    if (version.toLowerCase().contains('beta')) {
+        println "beta"
+        icon = '@drawable/icon_logo_neice'
+    } else {
+        println "not beta"
+        icon = '@drawable/icon_logo'
+
+    }
+    println icon
+    return icon
+}
+
+//创建当前时间字符创 比如 1704111213 表示 17年4月11号，12点13分
+def buildTime() {
+    def date = new Date()
+    def formattedDate = date.format('YYMMddHHmm')
+    return formattedDate
+}
+
+android {
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+
+    dexOptions {
+        jumboMode = true
+        javaMaxHeapSize "4g"
+    }
+
+    defaultConfig {
+        applicationId "com.cmri.universalapp"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode Integer.parseInt("${buildTime()}")
+        versionName "1.6.1." + "${buildTime()}"
+
+        //不同环境切换  默认正式环境
+        buildConfigField "String", "SERVER", "\"218.205.115.242\""
+        buildConfigField "String", "HTTP_SERVER_DEV", "\"http://218.205.115.239:8080\""//voip环境
+        buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+        buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"\""
+        //客服
+        buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.24.182\""
+        buildConfigField "int", "PORT_CUSTOMER_SERVICE", "20980"
+        //订单URL
+        buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shop.4ggogo.com/site/order/myOrder\""
+
+        //正式环境端口
+        //buildConfigField "int", "PORT_DEFAULT", "9801"
+        buildConfigField "int", "PORT_DEFAULT", "18080"
+        buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "9801"
+        buildConfigField "int", "PORT_GATEWAY", "81"
+        buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+
+
+        buildConfigField "String", "UNIT_TEST_PIC_PATH", "\"../test.png\""
+        buildConfigField "String", "UNIT_TEST_PIC_ZIP_PATH", "\"../testzip.png\""
+
+        buildConfigField "String", "SOURCEID", "\"010108\""
+        buildConfigField "String", "GREY_FLAG", "\"Beta\""
+        multiDexEnabled = true
+        manifestPlaceholders = [app_icon: "@drawable/icon_logo"]
+
+        buildConfigField "String", "PEOPLE_POWER_STATIC_PREFIX", "\"\""
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a"
+        }
+
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java', 'src/main/xiaoxi', 'src/main/voip']
+            assets.srcDirs = ['src/main/assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    signingConfigs {
+        myConfig {
+            //签名暂时用debug签名，后续要替换
+            storeFile file("debug.keystore")
+            storePassword("android")
+            keyAlias("androiddebugkey")
+            keyPassword("android")
+        }
+        release {
+            keyAlias 'uniapp_release.keystore'
+            keyPassword 'CMCC1234'
+            storeFile file("uniapp_release.keystore")
+            storePassword 'CMCC1234'
+        }
+    }
+    buildTypes {
+        // 默认release版本 为 测试版本new
+        release {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.myConfig
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.238:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"test\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"test.hsop.komect.com\""// 测试环境new
+            buildConfigField "int", "PORT_DEFAULT", "10443"// 测试环境new
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoptest.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "3"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"http://183.131.26.249:18030\""// voip环境
+            buildConfigField "String", "XIAOXI_APPKEY", "\"042709gg\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"zhgjgg042709\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"stbag.cmccconference.com\""
+            // 测试环境new
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"7fa388d9ea994d79fb363fe4f2ffee2e\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_test.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"AED1F935BA4F49D681494FE2AC080762\"" // 测试环境
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:38080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+//            debuggable true
+//            testCoverageEnabled = true
+        }
+
+        //开发环境 release
+        release_dev {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.myConfig
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "VERSION", "\"dev\""
+            buildConfigField "String", "SERVER", "\"218.205.115.242\"" // 开发环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+            buildConfigField "int", "PORT_DEFAULT", "10443"  // 开发环境
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18090"
+            buildConfigField "int", "PORT_GATEWAY", "81"
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoppre.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "2"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"http://218.205.115.239:8080\""//voip环境
+            buildConfigField "String", "XIAOXI_APPKEY", "\"027633pl\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"dikadsf48asdf\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"218.205.115.247\""
+
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_debug.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+//            debuggable true
+//            testCoverageEnabled = true
+        }
+
+        //线上环境 release
+        release_xianshang {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.238:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"xianshang\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"hsop.komect.com\""// 线上环境
+            buildConfigField "int", "PORT_DEFAULT", "10444"// 线上环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18081"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.24.182\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "20980"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shop.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010811\""  // 线上环境
+            buildConfigField "String", "APPKEY", "\"9AC0D240D877A603\""  // 线上环境
+            buildConfigField "int", "ENVIRONMENTID", "5"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"https://hsop.komect.com:10444\""
+//voip环境
+            buildConfigField "String", "XIAOXI_APPKEY", "\"127633pl\"" // 线上环境
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"zhgjgg042709\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"218.205.115.247\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_online_new.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"811DD4BDBC8045538C37BE36E9E5609A\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"https://hsop.komect.com/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://andlink.and-home.cn:8243\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"3478\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"open.home.komect.com\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"10087\""
+            buildConfigField "String", "PEOPLE_POWER_STATIC_PREFIX", "\"/presence\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"112.13.168.6:11080\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+//            testCoverageEnabled = true
+        }
+
+        //线上环境 debug
+        debug_xianshang {
+            initWith(debug)
+            signingConfig signingConfigs.release
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.238:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"xianshang\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"hsop.komect.com\""// 线上环境
+            buildConfigField "int", "PORT_DEFAULT", "10444"// 线上环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18081"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.24.182\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "20980"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shop.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010811\""  // 线上环境
+            buildConfigField "String", "APPKEY", "\"9AC0D240D877A603\""  // 线上环境
+            buildConfigField "int", "ENVIRONMENTID", "5"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"https://hsop.komect.com:10444\""
+//voip环境
+            buildConfigField "String", "XIAOXI_APPKEY", "\"127633pl\"" // 线上环境
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"zhgjgg042709\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"218.205.115.247\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_online_new.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"811DD4BDBC8045538C37BE36E9E5609A\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"https://hsop.komect.com/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://andlink.and-home.cn:8243\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"3478\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"open.home.komect.com\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"10087\""
+            buildConfigField "String", "PEOPLE_POWER_STATIC_PREFIX", "\"/presence\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"112.13.168.6:11080\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+            testCoverageEnabled = true
+        }
+
+        //新的测试环境 release
+        release_test_new {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.myConfig
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.238:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"test\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"test.hsop.komect.com\""// 测试环境new
+            buildConfigField "int", "PORT_DEFAULT", "10443"// 测试环境new
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoptest.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "3"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"http://183.131.26.249:18030\""// voip环境
+            buildConfigField "String", "XIAOXI_APPKEY", "\"042709gg\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"zhgjgg042709\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"stbag.cmccconference.com\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"7fa388d9ea994d79fb363fe4f2ffee2e\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_test.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"AED1F935BA4F49D681494FE2AC080762\"" // 测试环境
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:38080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+//            debuggable true
+//            testCoverageEnabled = true
+        }
+        //新的测试环境 debug  218.205.115.238:18080
+        debug_test_new {
+            initWith(debug)
+            signingConfig signingConfigs.myConfig
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.238:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"test\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"test.hsop.komect.com\""// 测试环境new
+            buildConfigField "int", "PORT_DEFAULT", "10443"// 测试环境new
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoptest.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "3"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"http://183.131.26.249:18030\""// voip环境
+            buildConfigField "String", "XIAOXI_APPKEY", "\"042709gg\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"zhgjgg042709\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"stbag.cmccconference.com\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"7fa388d9ea994d79fb363fe4f2ffee2e\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_test.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"AED1F935BA4F49D681494FE2AC080762\"" // 测试环境
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:38080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+//            testCoverageEnabled = false
+        }
+        //北京测试环境 release_test_beijing
+        release_test_beijing {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.243:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"testbeijing\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"218.205.115.243\""// 北京测试环境
+            buildConfigField "int", "PORT_DEFAULT", "10083"// 北京测试环境
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"11001517\""    // 北京测试环境
+            buildConfigField "String", "APPKEY", "\"1262443636F040D6\""// 北京测试环境
+            buildConfigField "int", "ENVIRONMENTID", "2"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"064876rw\"" // 北京测试环境
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"--------\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_bj.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+//            debuggable true
+//            testCoverageEnabled = true
+        }
+        //北京测试环境 debug_test_beijing
+        debug_test_beijing {
+            initWith(debug)
+            signingConfig signingConfigs.release
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.243:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"testbeijing\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"218.205.115.243\""// 北京测试环境
+            buildConfigField "int", "PORT_DEFAULT", "10083"// 北京测试环境
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"11001517\""    // 北京测试环境
+            buildConfigField "String", "APPKEY", "\"1262443636F040D6\""// 北京测试环境
+            buildConfigField "int", "ENVIRONMENTID", "2"
+            //小溪线上 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"064876rw\"" // 北京测试环境
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"--------\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_bj.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+            testCoverageEnabled = true
+        }
+
+        ut_debug {
+            signingConfig signingConfigs.myConfig
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.242:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"dev\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"218.205.115.242\"" // 开发环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+            buildConfigField "int", "PORT_DEFAULT", "10443"  // 开发环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18090"
+            buildConfigField "int", "PORT_GATEWAY", "81"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoppre.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "2"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"027633pl\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"dikadsf48asdf\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"218.205.115.247\""
+
+            //For Unit Test
+            buildConfigField "int", "UNIT_TEST_FLAG", "1"
+            buildConfigField "String", "UNIT_TEST_PIC_PATH", "\"../test.png\""
+            buildConfigField "String", "UNIT_TEST_PIC_ZIP_PATH", "\"../testzip.png\""
+            buildConfigField "String", "CERTIFICATE", "\"cer_debug.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""  //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+            testCoverageEnabled = true
+        }
+
+        //默认debug为 开发环境 debug
+        debug {
+            signingConfig signingConfigs.myConfig
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.242:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"dev\""
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "SERVER", "\"218.205.115.242\"" // 开发环境
+            buildConfigField "String", "HTTP_SERVER_DEV", "\"http://218.205.115.239:8080\""//voip环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+            buildConfigField "int", "PORT_DEFAULT", "10443"  // 开发环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18090"
+            buildConfigField "int", "PORT_GATEWAY", "81"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoppre.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "2"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"027633pl\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"dikadsf48asdf\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"218.205.115.247\""
+
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_debug.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+//            testCoverageEnabled = false
+        }
+        //开发环境 debug
+        debug_dev {
+            initWith(debug)
+            signingConfig signingConfigs.myConfig
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.242:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"dev\""
+            buildConfigField "String", "SERVER", "\"218.205.115.242\"" // 开发环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+            buildConfigField "int", "PORT_DEFAULT", "10443"  // 开发环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18080"
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18090"
+            buildConfigField "int", "PORT_GATEWAY", "81"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.20.171\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "8086"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shoppre.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010809\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"6298FB2C5E9607B2\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "2"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"027633pl\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"dikadsf48asdf\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"218.205.115.247\""
+
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_debug.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+//            testCoverageEnabled = true
+        }
+
+        ////预生产环境（Stage) debug
+        debug_Stage {
+            initWith(debug)
+            signingConfig signingConfigs.release
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+//            buildConfigField "String", "AGREEMENTADDRESS", "\"http://218.205.115.242:18080/agreement/agreement.html\"" // agreement address
+            buildConfigField "String", "VERSION", "\"stage\""
+            buildConfigField "String", "SERVER", "\"test.hsop.komect.com\"" // 预生产环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+            buildConfigField "int", "PORT_DEFAULT", "11443"  // 预生产环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18081"
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18090"
+            buildConfigField "int", "PORT_GATEWAY", "81"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.24.182\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "20980"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shop.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010811\""  // 预生产环境
+            buildConfigField "String", "APPKEY", "\"9AC0D240D877A603\""  // 预生产环境
+            buildConfigField "int", "ENVIRONMENTID", "4"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"020951lp\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"zhgjgg042709\"" // 测试环境new
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"stbag.cmccconference.com\""
+            // 测试环境new
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_stage.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.238:18008\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+            testCoverageEnabled = true
+        }
+        //预生产环境（Stage) release
+        release_Stage {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "VERSION", "\"stage\""
+            buildConfigField "String", "SERVER", "\"test.hsop.komect.com\"" // 预生产环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.8.1\""
+            buildConfigField "int", "PORT_DEFAULT", "11443"  // 预生产环境
+            buildConfigField "int", "PORT_USER_PROTOCLOL", "18081"
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18090"
+            buildConfigField "int", "PORT_GATEWAY", "81"
+            //客服
+            buildConfigField "String", "SERVER_CUSTOMER_SERVICE", "\"211.138.24.182\""
+            buildConfigField "int", "PORT_CUSTOMER_SERVICE", "20980"
+            //订单URL
+            buildConfigField "String", "ORDER_SERVICE_URL", "\"https://shop.4ggogo.com/site/order/myOrder\""
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"01010811\""  // 预生产环境
+            buildConfigField "String", "APPKEY", "\"9AC0D240D877A603\""  // 预生产环境
+            buildConfigField "int", "ENVIRONMENTID", "4"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"020951lp\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"--------\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"\""
+
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"cer_stage.bks\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.238:18008\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+
+//            testCoverageEnabled = true
+        }
+        //集采测试环境
+        debug_jicai_test {
+            initWith(debug)
+            signingConfig signingConfigs.release
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "VERSION", "\"dev\""
+            buildConfigField "String", "SERVER", "\"218.206.176.224\"" // 开发环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.1.1\""
+            buildConfigField "int", "PORT_DEFAULT", "10443"  // 开发环境
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18080"
+            buildConfigField "int", "PORT_GATEWAY", "17998"
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"11001806\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"C0DEDB44ED43E1CB\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "6"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"060369uq\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"--------\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"AED1F935BA4F49D681494FE2AC080762\"" // 测试环境
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:38080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+            debuggable true
+            testCoverageEnabled = true
+        }
+        //集采测试环境
+        release_jicai_test {
+            minifyEnabled true   //release包加入混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            buildConfigField "String", "HTTPSPROTOCOL", "\"https\""
+            buildConfigField "String", "HTTPPROTOCOL", "\"http\""
+            buildConfigField "String", "VERSION", "\"dev\""
+            buildConfigField "String", "SERVER", "\"218.206.176.224\"" // 开发环境
+            buildConfigField "String", "SERVER_GATEWAY", "\"192.168.1.1\""
+            buildConfigField "int", "PORT_DEFAULT", "10443"  // 开发环境
+            buildConfigField "int", "PORT_PLATFORM_WEBSOCKET", "18080"
+            buildConfigField "int", "PORT_GATEWAY", "17998"
+            //统一认证申请APPID APPKEY
+            buildConfigField "String", "APPID", "\"11001806\""  // 开发环境
+            buildConfigField "String", "APPKEY", "\"C0DEDB44ED43E1CB\""  // 开发环境
+            buildConfigField "int", "ENVIRONMENTID", "6"
+            //小溪沙箱 APPID APPKEY
+            buildConfigField "String", "XIAOXI_APPKEY", "\"060369uq\""
+            buildConfigField "String", "XIAOXI_APPKEY_TOKEN", "\"--------\""
+            buildConfigField "String", "XIAOXI_VOIP_SERVER", "\"\""
+            //release keystore sign
+            buildConfigField "String", "APK_RELEASE_SIGN_MD5", "\"2ae66bae7db12d32b910e4c47bcb9a61\""
+            buildConfigField "int", "UNIT_TEST_FLAG", "0"
+            buildConfigField "String", "CERTIFICATE", "\"\""
+            buildConfigField "String", "CERTIFICATE_KEY", "\"base123\""
+
+            //京东APP KEY
+            buildConfigField "String", "JD_APP_KEY", "\"F23C571F41DF4CD68C9E5F10AA13DC7B\""
+            buildConfigField "String", "JD_REDIRECT_URI", "\"http://218.205.115.238:28080/espapi/auth/jingdongresponse\""
+            //和目
+            buildConfigField "String", "HEMU_URL", "\"https://stg-andlink.and-home.cn:8353\""
+            buildConfigField "String", "HEMU_UDP_PORT", "\"8378\""
+            //智能家居PP平台地址配置
+            buildConfigField "String", "PEOPER_POWER_SERVER", "\"218.205.115.238\""
+            buildConfigField "String", "PEOPER_POWER_PORT", "\"8090\""
+            //UE 用户体验埋点服务器地址
+            buildConfigField "String", "UE_PROB_SERVER", "\"218.205.115.245:18088\""
+            //RN 动态配置文件地址
+            buildConfigField "String", "RN_DYNAMIC_SERVER", "\"112.54.207.61:3000\""
+            buildConfigField "Boolean", "RN_DEBUG", "false"
+
+//            testCoverageEnabled = true
+        }
+
+        //mock模拟数据环境
+        mock {
+            initWith(debug)
+            //mock环境下随便指定一个错误地址
+            buildConfigField "String", "SERVER", "\"127.0.0.1\""
+            buildConfigField "String", "SERVER_GATEWAY", "\"127.0.0.1\""
+        }
+//        release {
+//            signingConfig signingConfigs.release
+//        }
+
+//        applicationVariants.all { variant ->
+//            println  variant.mergedFlavor.manifestPlaceholders
+//            variant.mergedFlavor.manifestPlaceholders = getPlaceholders(variant.mergedFlavor.versionCode)
+//            println  variant.mergedFlavor.manifestPlaceholders
+//        }
+
+    }
+    productFlavors {
+        cmccUniversalApp {}
+//        cmccUniversalAppBaidu{}
+    }
+
+    productFlavors.all {
+        flavor ->
+            flavor.manifestPlaceholders = [app_icon: getIcon(android.defaultConfig.versionName)]
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def file = output.outputFile
+            if (!variant.buildType.name.startsWith('debug') && file != null && file.name.endsWith('.apk')) {
+                output.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
+            }
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+
+    dexOptions {
+        preDexLibraries = false
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs' //this way we can find the .aar file in libs folder
+    }
+    maven {
+        url 'http://mijia.sdk.westm.cn'
+    }
+
+    jcenter()
+
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile 'net.zetetic:android-database-sqlcipher:3.5.6@aar'
+
+    compile(name: 'MPChartLib-release', ext: 'aar')
+    compile(name: 'swipemenulistviewlibrary-release', ext: 'aar')
+    compile 'littlec:android:1.0'
+    compile('com.android.support:appcompat-v7:23.3.0') {
+        exclude group: 'com.android.support', module: 'support-vector-drawable'
+    }
+    compile('com.android.support:recyclerview-v7:23.4.0') {
+        exclude group: 'com.android.support', module: 'support-vector-drawable'
+    }
+    compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile('com.android.support:design:23.4.0') {
+        exclude group: 'com.android.support', module: 'support-vector-drawable'
+    }
+    compile('com.android.support:support-v4:23.4.0') {
+        exclude group: 'com.android.support', module: 'support-vector-drawable'
+    }
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile('com.android.support:multidex:1.0.1') {
+        exclude group: 'com.android.support', module: 'support-vector-drawable'
+    }
+
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile('com.android.support:cardview-v7:23.0.+') {
+        exclude group: 'com.android.support', module: 'support-vector-drawable'
+    }
+    compile 'com.bigkoo:convenientbanner:2.0.5'
+//    compile 'com.facebook.react:react-native:+'
+    compile(name: 'zxing-android-embedded-release', ext: 'aar')
+    compile(name: 'uSDK4.1.02_Phone_Android', ext: 'aar')
+
+    compile 'com.cmri.universalapp:reactandroid:0.0.1'
+    compile 'com.cmri.universalapp:react-native-fs:0.0.1'
+    compile 'com.plattysoft.leonids:LeonidsLib:1.3.2'
+    compile 'com.kyleduo.switchbutton:library:1.4.5'
+
+    //Unit test
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.robolectric:robolectric:3.1.2'
+    testCompile 'org.robolectric:shadows-multidex:3.1.2'
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+
+    if (gradle.ext.sourceAppInterface) {
+        compile project(':appinterface')
+    } else {
+        compile("com.cmri.universalapp:appinterface:$rootProject.ext.appInterfaceVersion") {
+            changing = true
+        }
+    }
+    //compile project(':ptr-lib')
+    if (gradle.ext.sourceCommon) {
+        compile project(':common')
+    } else {
+        compile("com.cmri.universalapp:common:$rootProject.ext.commonVersion")
+//                {
+//            exclude group: 'in.srain.cube', module: 'ultra-ptr'
+//        }
+    }
+
+    if (gradle.ext.sourceIm) {
+        compile(project(':im'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'smarthomeinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:im:$rootProject.ext.imVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'smarthomeinterface'
+        })
+    }
+
+    if (gradle.ext.sourceImInterface) {
+        compile project(':iminterface')
+    } else {
+        compile("com.cmri.universalapp:iminterface:$rootProject.ext.imInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    }
+
+    if (gradle.ext.sourceSetting) {
+        compile(project(':setting'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:setting:$rootProject.ext.settingVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+        })
+    }
+    if (gradle.ext.sourceSettingInterface) {
+        compile(project(':settinginterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:settinginterface:$rootProject.ext.settingInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    }
+
+    if (gradle.ext.sourceGateway) {
+        compile(project(':gateway'), {
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:gateway:$rootProject.ext.gatewayVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'in.srain.cube', module: 'ultra-ptr'
+        })
+    }
+    if (gradle.ext.sourceGatewayInterface) {
+        compile project(':gatewayinterface')
+    } else {
+        compile("com.cmri.universalapp:gatewayinterface:$rootProject.ext.gatewayInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+    if (gradle.ext.sourceFamily) {
+        compile(project(':family'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyalbuminterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:family:$rootProject.ext.familyVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyalbuminterface'
+            exclude group: 'UniversalApp', module: 'common'
+        })
+    }
+    if (gradle.ext.sourceFamilyInterface) {
+        compile(project(':familyinterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:familyinterface:$rootProject.ext.familyInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+    if (gradle.ext.sourceVoip) {
+        compile(project(':voip'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'voipinterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:voip:$rootProject.ext.voipVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'voipinterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    }
+
+    if (gradle.ext.sourceVoipInterface) {
+        compile project(':voipinterface')
+    } else {
+        compile "com.cmri.universalapp:voipinterface:$rootProject.ext.voipInterfaceVersion"
+    }
+
+    if (gradle.ext.sourceSmartHome) {
+        compile(project(':smarthome'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'smarthomeinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:smarthome:$rootProject.ext.smartHomeVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'smarthomeinterface'
+        })
+    }
+
+    if (gradle.ext.sourceSmartHomeInterface) {
+        compile project(':smarthomeinterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        }
+    } else {
+        compile("com.cmri.universalapp:smarthomeinterface:$rootProject.ext.smartHomeInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+    if (gradle.ext.sourceSpeedUp) {
+        compile(project(':speedup'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'speedupinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:speedup:$rootProject.ext.speedupVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'speedupinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    }
+    if (gradle.ext.sourceSpeedUpInterface) {
+        compile(project(':speedupinterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:speedupinterface:$rootProject.ext.speedupInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+    if (gradle.ext.sourceNews) {
+        compile(project(':news'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:news:$rootProject.ext.newsVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'gatewayinterface'
+            exclude group: 'com.cmri.universalapp', module: 'logininterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+        })
+    }
+    if (gradle.ext.sourceNewsInterface) {
+        compile(project(':newsinterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:newsinterface:$rootProject.ext.newsInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+    if (gradle.ext.sourceLogin) {
+        compile(project(':login'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:login:$rootProject.ext.loginVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    }
+    if (gradle.ext.sourceSettingInterface) {
+        compile(project(':settinginterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:settinginterface:$rootProject.ext.settingInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+    if (gradle.ext.sourceLoginInterface) {
+        compile(project(':logininterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:logininterface:$rootProject.ext.loginInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    }
+
+
+    if (gradle.ext.sourceIndex) {
+        compile(project(':index'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'smarthomeinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:index:$rootProject.ext.indexVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'settinginterface'
+            exclude group: 'com.cmri.universalapp', module: 'indexinterface'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'smarthomeinterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+        })
+    }
+    if (gradle.ext.sourceIndexInterface) {
+        compile(project(':indexinterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:indexinterface:$rootProject.ext.indexInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'newsinterface'
+        })
+    }
+    if (gradle.ext.sourceFamilyAlbum) {
+        compile(project(':familyalbum'), {
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyalbuminterface'
+        })
+    } else {
+        compile("com.cmri.universalapp:familyalbum:$rootProject.ext.familyAlbumVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'familyinterface'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'iminterface'
+            exclude group: 'com.cmri.universalapp', module: 'familyalbuminterface'
+            exclude group: 'in.srain.cube', module: 'ultra-ptr'
+        })
+    }
+    if (gradle.ext.sourceFamilyAlbumInterface) {
+        compile(project(':familyalbuminterface'), {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+        })
+    } else {
+        compile("com.cmri.universalapp:familyalbuminterface:$rootProject.ext.familyAlbumInterfaceVersion", {
+            exclude group: 'com.cmri.universalapp', module: 'common'
+            exclude group: 'com.cmri.universalapp', module: 'appinterface'
+
+        })
+    }
+}
+
+//JACOCO config
+//--- JACOCO config start ---  'src/main/java/com/cmri/universalapp',
+jacoco {
+    toolVersion = "0.7.7.201606060606"
+}
+
+def coverageSourceDirs = [
+        'src/main/java'
+]
+
+def classSourceDirs = [
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/domain',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/view/applyjoin/ApplyJoinFamilyPresenter.class',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/view/familyverify/FamilyVerifyPresenter.class',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/view/info/AdminManagerInfoPresenter.class',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/view/info/MemberManagerInfoPresenter.class',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/view/invite/InvitePresenter.class',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/member/view/inviteprecess/HasInvitePresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/tasks/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/tasks/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/group/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/group/model',
+//        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/family/group/view/create/CreateFamilyPresenter.class',
+
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/home/event',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/home/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/home/util',
+
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/im/util',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/im/threadpool',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/im/task',
+
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/im/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/im/event',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/login/model',
+
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/download/DownloadInfo.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/download/DownloadManager.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/download/DownloadPicTask.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/AES.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/Base64.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/CommonUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/DataCheckUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/DensityUtils.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/DESEncrypt.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/DialogUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/Logger.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/MessageUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/MyLogger.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/MyUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/NetSpeedFormatter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/NetworkUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/PasswordUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/QRCodeUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/TimeUtil.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/UIUtils.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/UriImage.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/util/ViewUtil.class',
+
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/device/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/device/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/device/view/devicedetail/DeviceDetailPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/device/view/devicelist/DeviceListPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/device/view/devicestate/StateDetailPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/gateway/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/gateway/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/gateway/view/BindGatewayPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/gateway/view/ConnectGatewayPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/gatewaysetting/view/GatewaySettingPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/hardware/smarthardware/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/hardware/smarthardware/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/wifisetting/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/wifisetting/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/wifisetting/view/WifiSecuritySettingPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/gateway/wifisetting/view/WifiSettingPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/home/domain',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/home/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/home/view/plugindetail/PluginDetailPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/home/view/pluginlist/PluginListPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/health/model',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/health/view/edit/AbsTimerEditPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/health/view/edit/TimerAddPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/health/edit/TimerEditPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/health/view/list/TimerListPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/speedlimit/view/list/SpeedLimitPresenter.class',
+        'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp/device/ability/speedlimit/view/edit/SpeedLimitSettingPresenter.class',
+
+]
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testCmccUniversalAppUt_debugUnitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        html {
+            enabled true
+            destination 'build/reports/jacoco/coverage'
+        }
+        xml {
+            enabled true
+            destination 'build/reports/jacoco/coverage/jacocoReport.xml'
+        }
+    }
+//    classDirectories = fileTree(
+//            dir: 'build/intermediates/classes/cmccUniversalApp/ut_debug/com/cmri/universalapp' ,
+//
+//
+//            excludes: [
+//                '**/R*.class',
+//                '**/BuildConfig*',
+//                '**/Manifest*',
+//                '**/*$$*',
+//
+//                //Code
+//                //*M excludes:
+//                'im/listener/**',
+//                'im/activity/**',
+//                'im/fragment/**',
+//                'im/callback/**',
+//                'im/view/**',
+//
+//            ]
+//    )
+
+    classDirectories = files(classSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+
+    executionData = files("$buildDir/jacoco/testCmccUniversalAppUt_debugUnitTest.exec")
+    // Bit hacky but fixes https://code.google.com/p/android/issues/detail?id=69174.
+    // We iterate through the compiled .class tree and rename $$ to $.
+    doFirst {
+        new File("$buildDir/intermediates/classes/").eachFileRecurse { file ->
+            if (file.name.contains('$$')) {
+                file.renameTo(file.path.replace('$$', '$'))
+            }
+        }
+    }
+}
+//--- JACOCO config end ---
+
+
+
+

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/LinearLayout.Dialog"
+    android:background="@drawable/invit_family_notice_bg"
+    android:layout_width="322dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/text_view_tip_dialog_text"
+        style="@style/TextView.Dialog.Title"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:lineSpacingMultiplier="1.2"
+        android:textSize="16dp"
+        android:textColor="@color/cor3"
+        android:paddingTop="34dp"
+        android:gravity="top|center_horizontal"
+        tools:text="是否确定是否加入家庭？"/>
+
+    <TextView
+        android:id="@+id/text_view_sub_tip"
+        style="@style/TextView.Dialog.Title"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        tools:text="您是家庭（家庭名称）的管理员，若接受邀请，原家庭自动解散，且无法找回所有内容"
+        android:lineSpacingExtra="5dp"
+        android:textColor="@color/cor2"
+        android:textSize="13dp"
+        android:paddingBottom="34dp"
+        android:paddingTop="14dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/im_linecor1" />
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="46dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="6dp">-->
+
+        <!--<Button-->
+            <!--android:id="@+id/button_tip_dialog_cancel"-->
+            <!--style="@style/Button.Dialog.Cancel"-->
+            <!--android:background="@color/cor6"-->
+            <!--android:layout_weight="1.0"-->
+            <!--android:text="@string/cancel" />-->
+
+        <!--<View-->
+            <!--android:layout_width="1px"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/lincor2" />-->
+
+        <!--<Button-->
+            <!--android:id="@+id/button_tip_dialog_ok"-->
+            <!--android:background="@color/cor6"-->
+            <!--style="@style/Button.Dialog"-->
+            <!--android:layout_weight="1.0"-->
+            <!--android:text="@string/ok" />-->
+    <!--</LinearLayout>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_below="@id/line1"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp" >
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@color/im_linecor1" />
+
+        <Button
+            android:id="@+id/button_tip_dialog_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/line2"
+            android:background="@drawable/im_selector_notice_dialog_cancel_btn"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/im_popup_btn_cor"
+            android:textSize="@dimen/im_font_size8" />
+
+        <Button
+            android:id="@+id/button_tip_dialog_ok"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/line2"
+            android:background="@drawable/im_selector_notice_dialog_ok_btn"
+            android:gravity="center"
+            android:text="@string/ok"
+            android:textColor="@color/im_popup_btn_cor"
+            android:textSize="@dimen/im_font_size8" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,73 @@
+@import "./custom/global";
+
+.iconDig{background-image:url('../assets/faultD/digList.png'); background-repeat:no-repeat;}
+.g-faultD{ width: 100%;
+  .m-first{float: left; width: 100%; height: 5.3rem; background-color: #19b8a6; padding: 1rem .85rem 0;
+    .m-image{float: left; width: 25%; height: 2.4rem;
+      .u-image{ width: 2.4rem; height: 2.4rem; margin: .2rem auto;
+        img{width: 100%; height: 100%;}
+      }
+    }
+
+    .m-text{float: left; width: 100%; margin-top: .4rem;
+    .u-text{float: left; width: 25%; text-align: center; color: #FFF; font-size: @font-12;}}
+
+  }
+  .m-second{float: left; width: 100%; padding: 0 .85rem; height:3.6rem;
+    //background-color: @globalGreen;
+    .u-img{float: left; width:  25%; height: 1rem; margin-top: 1.43rem;}
+    .i-first, .i-middle, .i-last{ float: left; width:  100%; height:100%; background-size:cover; background-repeat: no-repeat;
+    }
+    .i-first{
+      &.beforeTest{background-image:url('../../static/faultDiagnosis/first-before.png');}
+      &.testing{background-image:url('../../static/faultDiagnosis/first-doing.png'); background-repeat: repeat; }
+      &.success{background-image:url('../../static/faultDiagnosis/first-success.png'); }
+      &.fail{background-image:url('../../static/faultDiagnosis/first-fail.png');}
+    }
+    .i-middle{
+      &.beforeTest{background-image:url('../../static/faultDiagnosis/middle-before.png');}
+      &.testing{background-image:url('../../static/faultDiagnosis/middle-doing.png');}
+      &.success{background-image:url('../../static/faultDiagnosis/middle-success.png'); background-repeat: repeat; }
+      &.fail{background-image:url('../../static/faultDiagnosis/middle-fail.png'); background-repeat: repeat;}
+
+    }
+    .i-last{
+      &.beforeTest{background-image:url('../../static/faultDiagnosis/last-before.png'); background-repeat: repeat;}
+      &.testing{background-image:url('../../static/faultDiagnosis/last-doing.png');}
+      &.success{background-image:url('../../static/faultDiagnosis/last-success.png'); background-repeat: repeat; }
+      &.fail{background-image:url('../../static/faultDiagnosis/last-fail.png');}
+    }
+
+  }
+  .m-result{float: left; width: 100%;
+    .u-testing{width: 100%; padding: 5rem 1rem 0; text-align: center; font-size: @font-18; color: @font-color-dark;}
+    .u-img{width: 3.3rem; height: 3.3rem; margin: 2.4rem auto 0;
+      img{width: 100%; height: 100%;}
+    }
+    .u-result{width:100%; margin-top: .67rem; text-align: center; font-size: @font-18; color: @font-color-dark;}
+    .u-text{width: 100%; padding: .67rem 2rem 1rem 2rem; font-size: @font-14; color: @font-color-darkGray;
+      &.t-center{text-align: center;}
+    }
+
+  }
+  .m-btn{position: absolute; width: 100%; height: 5rem; padding-top: 1.5rem; bottom: 0;
+    input{
+      &[disabled],
+      &.disabled{ background-color:#C8C8C8; color:#FFF; }
+      //&.disable{background-color: #C8C8C8; color: #FFF;}
+    }
+  }
+
+}
+
+.gradient{
+  background: @globalGreen;
+  background: -moz-linear-gradient(top,  @globalGreen 0%, #4ed09a 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@globalGreen), color-stop(100%,#4ed09a));
+  background: -webkit-linear-gradient(top,  @globalGreen 0%,#4ed09a 100%);
+  background: -o-linear-gradient(top,  @globalGreen 0%,#4ed09a 100%);
+  background: -ms-linear-gradient(top,  @globalGreen 0%,#4ed09a 100%);
+  background: linear-gradient(to bottom,  @globalGreen 0%,#4ed09a 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#30c0b1', endColorstr='#4ed09a',GradientType=0 );
+}
+:root .gradient{filter:none;}

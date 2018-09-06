@@ -1,0 +1,15 @@
+{
+  "subscribeTopics" : [ {
+    "name" : "/cloud/downward/command/24615AAD2000",
+    "color" : "#B3E6E6"
+  }, {
+    "name" : "/device/upward/data/all",
+    "color" : "#B3CCFF"
+  } ],
+  "publishTopics" : [ {
+    "name" : "/cloud/downward/command/24615AAD2000"
+  }, {
+    "name" : "/device/upward/data/all"
+  } ],
+  "clipboardMessages" : [ ]
+}

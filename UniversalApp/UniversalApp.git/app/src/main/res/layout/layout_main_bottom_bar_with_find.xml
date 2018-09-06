@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/check_box_bottom_tab_find"
+        style="@style/RadioButton.BottomBar"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        android:drawableTop="@drawable/selector_radio_button_bottom_bar_find"
+        android:text="@string/index"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/check_box_bottom_tab_family"
+        style="@style/RadioButton.BottomBar"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        android:drawableTop="@drawable/selector_radio_button_bottom_bar_home"
+        android:text="@string/socially" />
+
+    <CheckBox
+        android:id="@+id/check_box_bottom_tab_gateway"
+        style="@style/RadioButton.BottomBar"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        android:drawableTop="@drawable/selector_radio_button_bottom_bar_gateway"
+        android:text="@string/my_gateway" />
+
+    <CheckBox
+        android:id="@+id/check_box_bottom_tab_device"
+        style="@style/RadioButton.BottomBar"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_bottombar_bg"
+        android:drawableTop="@drawable/selector_radio_button_bottom_bar_device"
+        android:text="@string/my_device" />
+
+</merge>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="switch_location_to">已切换地点到%1$s</string>
+    <string name="network_error">当前网络不可用，请检查网络！</string>
+    <string name="activity_center">我的流量券</string>
+    <string name="choose_city">城市选择</string>
+    <string name="default_city">北京</string>
+    <string name="join_new_family_member">接受邀请将自动退出%1$s，请谨慎操作</string>
+    <string name="confirm_join_family">是否确定加入家庭</string>
+    <string name="goto_sign">去签到</string>
+    <string name="signed">已签到</string>
+    <string name="my_bean">我的亲密豆</string>
+
+</resources>

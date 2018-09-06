@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_bottom_bar_image"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_centerHorizontal="true"
+        tools:src="@drawable/button_add_normal" />
+
+    <TextView
+        android:id="@+id/tv_bottom_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_bottom_bar_image"
+        android:layout_centerHorizontal="true"
+        tools:text="首页"
+        android:layout_marginTop="1dp"
+        tools:textSize="@dimen/size5" />
+
+    <View
+        android:id="@+id/view_center_bottom_bar_dot"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/iv_bottom_bar_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="1dp"
+        android:layout_toRightOf="@id/view_center_bottom_bar_dot"
+        tools:src="@drawable/message_icon_chat_new" />
+</merge>

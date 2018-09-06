@@ -1,0 +1,119 @@
+//配置extra属性之后，后面的子project需要用到这些属性的地方都直接调用rootProject.ext.XXX，避免修改的时候需要每个project里面都需要去检查、修改
+//涉及到多个子项目的值可以在这里配置
+ext {
+    compileSdkVersion = 25
+    buildToolsVersion =  "25.0.0"
+    minSdkVersion = 17
+    targetSdkVersion = 22
+    appInterfaceVersion = "1.0.0-SNAPSHOT"
+    commonVersion = "0.0.55-SNAPSHOT"
+    smartHomeVersion = "0.0.18-SNAPSHOT"
+    smartHomeInterfaceVersion = "1.0.0-SNAPSHOT"
+    voipVersion = "0.0.13-SNAPSHOT"
+    voipInterfaceVersion = "1.0.0-SNAPSHOT"
+    imVersion = "0.0.27-SNAPSHOT"
+    imInterfaceVersion = "1.0.0-SNAPSHOT"
+    gatewayVersion = "0.0.14-SNAPSHOT"
+    gatewayInterfaceVersion = "1.0.0-SNAPSHOT"
+    familyVersion = "0.0.13-SNAPSHOT"
+    familyInterfaceVersion = "1.0.0-SNAPSHOT"
+    loginVersion = "0.0.8-SNAPSHOT"
+    loginInterfaceVersion = "1.0.0-SNAPSHOT"
+    settingVersion = "0.0.10-SNAPSHOT"
+    settingInterfaceVersion = "1.0.0-SNAPSHOT"
+    speedupVersion = "0.0.8-SNAPSHOT"
+    speedupInterfaceVersion = "1.0.0-SNAPSHOT"
+    newsVersion = "0.0.11-SNAPSHOT"
+    newsInterfaceVersion = "1.0.0-SNAPSHOT"
+    indexVersion = "0.0.9-SNAPSHOT"
+    indexInterfaceVersion = "1.0.0-SNAPSHOT"
+    familyAlbumVersion="0.0.1-SNAPSHOT"
+    familyAlbumInterfaceVersion="1.0.0-SNAPSHOT"
+}
+
+buildscript {
+    repositories {
+        mavenCentral() // add repository
+        jcenter()
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'de.undercouch:gradle-download-task:2.0.0'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            url "http://172.23.12.234/nexus/content/repositories/zdyy/"
+            credentials {
+                username "zdyy"
+                password "zdyy123"
+            }
+        }
+        maven {
+            url "http://172.23.12.234/nexus/content/repositories/zdyy_snapshot/"
+            credentials {
+                username "zdyy"
+                password "zdyy123"
+            }
+        }
+        maven {
+            url "http://172.23.12.234/nexus/content/repositories/thirdparty/"
+        }
+
+        maven { url "https://jitpack.io" }//greenDao 数据库升级
+        mavenCentral()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+class TimingsListener implements TaskExecutionListener, BuildListener {
+    private Clock clock
+    private timings = []
+
+    @Override
+    void buildFinished(BuildResult result) {
+        println "Task timings:"
+        for (timing in timings) {
+            if (timing[0] >= 50) {
+                printf "%7sms  %s\n", timing
+            }
+        }
+    }
+
+    @Override
+    void buildStarted(Gradle gradle) {}
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {}
+
+    @Override
+    void projectsLoaded(Gradle gradle) {}
+
+    @Override
+    void settingsEvaluated(Settings settings) {}
+
+    @Override
+    void beforeExecute(Task task) {
+        clock = new org.gradle.util.Clock()
+    }
+
+    @Override
+    void afterExecute(Task task, TaskState state) {
+        def miliseconds = clock.timeInMs
+        timings.add([miliseconds, task.path])
+        task.project.logger.warn "${task.path} took ${miliseconds}ms"
+    }
+}
+
+gradle.addListener new TimingsListener()

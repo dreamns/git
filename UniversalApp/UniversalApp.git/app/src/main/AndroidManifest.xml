@@ -1,0 +1,563 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.cmri.universalapp"
+          android:versionCode="40583"
+          android:versionName="1.6.1.40583">
+
+
+    <!-- 集成统一认证插件权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <!-- APP 对外拨打电话权限 -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!-- APP 打开相机权限 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+    <!-- UniApp 自定义权限  -->
+    <permission
+        android:name="com.cmri.universalapp.permission.ACCESS"
+        android:label="UniversalApp customize permission"
+        android:protectionLevel="normal" />
+
+    <application
+        android:name=".base.UniversalApp"
+        android:allowBackup="false"
+        android:icon="${app_icon}"
+        android:label="@string/universal_app_name"
+        android:supportsRtl="true"
+        android:theme="@style/UniversalAppTheme"
+        tools:replace="android:allowBackup,android:theme,android:label">
+
+        <!-- 用于trace集成 -->
+        <meta-data
+            android:name="prob_appkey"
+            android:value="14677915459507539aa11e10150e4b25" />
+        <meta-data
+            android:name="prob_app_channel"
+            android:value="数字家庭Android" />
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="a1a7085caef965ebb14c6953eb87df92" />
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="591aa74fc62dca6e980008b3" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Umeng"></meta-data>
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="DEV" />
+
+         <meta-data
+         android:name="com.cmri.universalapp.base.cache.GlideDiskCacheMoudle"
+         android:value="GlideModule"/>
+
+
+        <!-- .login.activity.SplashActivity -->
+        <!-- .device.ability.speedup.view.SpeedUpActivity -->
+        <activity
+            android:name=".login.activity.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--<data android:scheme="com.cmri.universalapp" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <receiver android:name=".setting.LogoutReceiver"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="ACTION_LOGOUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".SmartMainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="digitalhome"
+                    android:pathPrefix="/main"
+                    android:scheme="cmcc" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.cmri.universalapp.index.ChooseCityActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan"></activity>
+        <activity
+            android:name=".login.activity.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".login.activity.PasswordLoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".login.activity.SetPasswordActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".login.activity.WelcomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:theme="@style/WelcomeTheme" />
+        <activity
+            android:name=".login.activity.CreateNicknameActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".setting.ChangePhoneActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.PrivacyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.BigImageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.ClipActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.AccountSecurityActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.CloseActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".setting.WebViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".login.AppUpdateService" />
+        <!-- 友盟分享 start -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- tencent -->
+        <activity
+            android:name="com.umeng.qq.tencent.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent1106128760" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.umeng.qq.tencent.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <!-- 友盟分享 end -->
+
+
+        <!-- 消息推送Service -->
+        <service
+            android:name=".push.PushService"
+            android:exported="false" />
+        <service
+            android:name="com.cmcc.dhsso.service.SsoService"
+            android:exported="false"
+            android:process="com.cmcc.dhsso.service.SsoService">
+            <intent-filter>
+                <action android:name="com.cmcc.dhsso.Action.SsoService" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="service_version"
+                android:value="1.5.0-jar.arm" />
+        </service>
+
+        <activity
+            android:name=".index.view.IndexWebViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+
+
+        <!-- 侧边栏 start -->
+        <activity
+            android:name=".setting.FreeTellActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".setting.SettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.PersonalInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".setting.AboutUsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.betainvitation.InvitationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.betainvitation.view.AddBateMemberActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.suggestions.FeedbackActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <!-- 侧边栏 end -->
+
+        <!-- Message start -->
+        <receiver android:name=".im.receiver.MessageReceiver"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_SHOW_MESSAGE_NOTIFY" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_INVITE_TO_JOIN_GROUP" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_SHOW_GROUP_MESSAGE_NOTIFY" />
+                <action android:name="com.suntek.mway.rcs.ACTION_UI_GROUP_INVITATION" />
+                <action android:name="ACTION_OPERATE_MESSAGE_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".im.provider.FavoriteMessageProvider"
+            android:authorities="com.cmri.universalapp.im.provider.FavoriteMessageProvider"
+            android:exported="false" />
+        <provider
+            android:name=".im.provider.MessageProvider"
+            android:authorities="com.cmri.universalapp.im.provider.message"
+            android:exported="false" />
+
+        <!-- Following provider just for unit test -->
+        <provider
+            android:name=".im.provider.MessageProviderUt"
+            android:authorities="com.cmri.universalapp.im.provider.message.ut"
+            android:exported="false" />
+
+        <activity
+            android:name=".im.activity.ConversationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".im.activity.BuildMessageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".im.activity.CollectMsgListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".im.activity.ChatDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".im.activity.ChangeGroupMemberActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".im.activity.PlaintTextDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.ImageBrowserActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustUnspecified" />
+        <activity
+            android:name=".im.activity.ImageChooseCommonActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.ImageBrowserCommonActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.ImageChooseActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.ImageViewerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.CollectMsgDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.ShowLocationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.LocationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.SetMyAliasActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.MsgNotifySettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.SysMsgActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.SysMsgDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.SysMsgChatDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".im.activity.AtMemberSelectionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <!-- Message end -->
+        <activity
+            android:name=".family.member.view.pushwarn.PushNotifyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <receiver android:name=".network.NetWorkMonitor">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+        ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        -->
+        <!-- 测试页面 -->
+
+
+        <!-- 掌厅 -->
+        <activity
+            android:name=".family.charge.view.flux.FluxActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".family.charge.view.bill.AccountActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait" />
+
+
+        <!--<activity-->
+        <!--android:name=".family.ClipPictureActivity"-->
+        <!--android:configChanges="keyboardHidden|orientation"-->
+        <!--android:exported="false"-->
+        <!--android:permission="com.cmri.universalapp.permission.ACCESS"-->
+        <!--android:screenOrientation="portrait" />-->
+
+        <!-- Service & receiver -->
+        <service android:name="com.cmri.universalapp.contact.service.LittlecService" />
+        <receiver android:name="com.littlec.conference.talk.service.PhoneReceiver">
+            <!--android:permission="littlec.receiver.permission.SYSTEM">
+            <!-android:exported="false"-->
+            <intent-filter>
+                <!-- 获取来电广播 -->
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <!-- 获取去电广播 -->
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+
+        <!-- News activity -->
+        <activity
+            android:name=".news.view.NewsMainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="digitalhome"
+                    android:path="/function_AndNewsTab"
+                    android:scheme="cmcc" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name="com.cmri.universalapp.base.view.scancode.activity.CaptureActivity"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".applink.WebEntranceActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/TransparentActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="com.cmri.universalapp" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.cmri.universalapp.index.view.NetCheckActivity"
+            android:permission="com.cmri.universalapp.permission.ACCESS"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="digitalhome"
+                    android:path="/function_checkNet"
+                    android:scheme="cmcc" />
+            </intent-filter>
+        </activity>
+        <service android:name="cmcc.ueprob.agent.background.AppBgService"
+                 android:exported="false">
+            <intent-filter>
+                <action android:name="com.cmcc.service.trace.TraceAppBgService" >
+                </action>
+            </intent-filter>
+        </service>
+
+
+    </application>
+
+</manifest>

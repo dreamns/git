@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="dot_bottom_button">
+        <attr name="dbb_src" format="reference|color" />
+        <attr name="dbb_titleColor" format="reference|color" />
+        <attr name="dbb_title" format="reference|string" />
+        <attr name="dbb_titleSize" format="reference|dimension" />
+        <attr name="dbb_dotSrc" format="reference" />
+        <attr name="dbb_dotMargin_horizon" format="reference|dimension" />
+    </declare-styleable>
+
+</resources>

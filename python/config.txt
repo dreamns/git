@@ -1,0 +1,20 @@
+{
+  "message" : "成功",
+  "data" : {
+    "udpAddress" : "127.0.0.1",
+    "normPeriod" : "600",
+    "excpFrequency" : "6",
+    "httpAddress" : "hz.gwplugin.komect.com",
+    "dnsAddress" : "hz.gwplugin.komect.com",
+    "httpPort" : "9990",
+    "tcpPort" : "15683",
+    "normTime" : "30",
+    "excpPeriod" : "300",
+    "dnsPort" : "35688",
+    "sessionId" : "e426286ddb004fa9a365ee48bce8cf67",
+    "excpTime" : "30",
+    "tcpAddress" : "192.168.254.131",
+    "udpPort" : "35688"
+  },
+  "code" : "1000000"
+}
